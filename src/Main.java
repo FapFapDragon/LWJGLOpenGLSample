@@ -1,9 +1,3 @@
-
-/*
- * Copyright LWJGL. All rights reserved.
- * License terms: https://www.lwjgl.org/license
- */
-
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.lwjgl.BufferUtils;
@@ -14,7 +8,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
@@ -28,6 +21,8 @@ public class Main {
     int height = 720;
     Object lock = new Object();
     boolean destroyed;
+
+    Triangle tri = new Triangle();
 
     private boolean init()
     {
@@ -90,7 +85,7 @@ public class Main {
             // Clear the screen. It's not mentioned before Tutorial 02, but it can cause flickering, so it's there nonetheless.
             glClear( GL_COLOR_BUFFER_BIT );
 
-            // Draw nothing, see you in tutorial 2 !
+            tri.draw();
 
             // Swap buffers
             glfwSwapBuffers(window);
