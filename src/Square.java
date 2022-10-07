@@ -3,13 +3,11 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.ARBVertexArrayObject;
 import org.lwjgl.opengl.ARBVertexBufferObject;
-
-import java.nio.FloatBuffer;
-
-import static org.lwjgl.opengl.GL31C.*;
 import org.lwjgl.system.MemoryStack;
 
-public class Triangle {
+import static org.lwjgl.opengl.GL31C.*;
+
+public class Square {
 
     //Values needed for Model Matrix
     private Vector3f position    = new Vector3f(1, 1, 1);
@@ -17,9 +15,43 @@ public class Triangle {
     private Vector3f scale       = new Vector3f(1f, 1f, 1f);
 
     private Matrix4f model_matrix = new Matrix4f();
-    private float vertices[] = new float[]{-1.0f, -1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
-            0.0f,  1.0f, 0.0f};
+    private float vertices[] = new float[]{-1.0f,-1.0f,-1.0f, // triangle 1 : begin
+            -1.0f,-1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f, // triangle 1 : end
+            1.0f, 1.0f,-1.0f, // triangle 2 : begin
+            -1.0f,-1.0f,-1.0f,
+            -1.0f, 1.0f,-1.0f, // triangle 2 : end
+            1.0f,-1.0f, 1.0f,
+            -1.0f,-1.0f,-1.0f,
+            1.0f,-1.0f,-1.0f,
+            1.0f, 1.0f,-1.0f,
+            1.0f,-1.0f,-1.0f,
+            -1.0f,-1.0f,-1.0f,
+            -1.0f,-1.0f,-1.0f,
+            -1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f,-1.0f,
+            1.0f,-1.0f, 1.0f,
+            -1.0f,-1.0f, 1.0f,
+            -1.0f,-1.0f,-1.0f,
+            -1.0f, 1.0f, 1.0f,
+            -1.0f,-1.0f, 1.0f,
+            1.0f,-1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f,
+            1.0f,-1.0f,-1.0f,
+            1.0f, 1.0f,-1.0f,
+            1.0f,-1.0f,-1.0f,
+            1.0f, 1.0f, 1.0f,
+            1.0f,-1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f,-1.0f,
+            -1.0f, 1.0f,-1.0f,
+            1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f,-1.0f,
+            -1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f,
+            1.0f,-1.0f, 1.0f
+    };
 
     private int vao;
     private int vbo;
@@ -28,7 +60,7 @@ public class Triangle {
 
     private Shader shader;
 
-    public Triangle(Shader shader)
+    public Square(Shader shader)
     {
         initVAO();
         initVBO();
@@ -36,7 +68,7 @@ public class Triangle {
         return;
     }
 
-    public Triangle()
+    public Square()
     {
         initVAO();
         initVBO();
@@ -67,12 +99,13 @@ public class Triangle {
             glUniformMatrix4fv(this.mvp_location, false, mvp.get(stack.mallocFloat(16)));
 
         }
+
         glUseProgram(shader.getProgram());
         ARBVertexArrayObject.glBindVertexArray(vao);
         ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, vbo);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(0);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 12*3);
         glDisableVertexAttribArray(0);
     }
 }

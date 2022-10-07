@@ -1,14 +1,12 @@
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL31C.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class Main {
@@ -17,12 +15,20 @@ public class Main {
     GLFWFramebufferSizeCallback fbCallback;
 
     long window;
-    int width = 1280;
-    int height = 720;
+    int width = 640;
+    int height = 480;
     Object lock = new Object();
     boolean destroyed;
 
-    Triangle tri = new Triangle();
+    private Matrix4f view_matrix = new Matrix4f();
+
+    private Matrix4f perspective_matrix = new Matrix4f();
+
+    private Matrix4f vp_matrix = new Matrix4f();
+    Shader default_shader;
+    Triangle tri;
+
+    Square sqr;
 
     private boolean init()
     {
@@ -55,7 +61,24 @@ public class Main {
 
         glfwMakeContextCurrent(window);
 
+        GL.createCapabilities();
 
+        String vertShaderPath = "C:\\Users\\twalther\\Documents\\Programming\\LWJGLOpenGLSample-main\\src\\shaders\\vert.vsh";
+        String fragShaderPath = "C:\\Users\\twalther\\Documents\\Programming\\LWJGLOpenGLSample-main\\src\\shaders\\frag.fg";
+        try {
+            default_shader = new Shader(vertShaderPath, fragShaderPath, true);
+        }
+        catch (Exception e){
+            System.err.println("Unable to load shader");
+        }
+
+        tri  = new Triangle();
+
+        sqr = new Square();
+
+        perspective_matrix.setPerspective(45, width/height, 0.1f, 100);
+        view_matrix.lookAt(new Vector3f(4, 3, 3f), new Vector3f(0, 0, 0), new Vector3f(0, 1, 0));
+        perspective_matrix.mul(view_matrix, vp_matrix);
         return true;
     }
 
@@ -74,19 +97,19 @@ public class Main {
 
     private void loop()
     {
-        GL.createCapabilities();
 
         // Set the clear color
         glClearColor(0f, 0.0f, 0.0f, 0.0f);
         // Ensure we can capture the escape key being pressed below
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
+        perspective_matrix.mul(view_matrix, vp_matrix);
         do{
             // Clear the screen. It's not mentioned before Tutorial 02, but it can cause flickering, so it's there nonetheless.
-            glClear( GL_COLOR_BUFFER_BIT );
+            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            tri.draw();
-
+            //tri.draw(vp_matrix);
+            sqr.draw(vp_matrix);
             // Swap buffers
             glfwSwapBuffers(window);
             glfwPollEvents();
