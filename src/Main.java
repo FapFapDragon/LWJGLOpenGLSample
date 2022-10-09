@@ -63,8 +63,8 @@ public class Main {
 
         GL.createCapabilities();
 
-        String vertShaderPath = "C:\\Users\\twalther\\Documents\\Programming\\LWJGLOpenGLSample-main\\src\\shaders\\vert.vsh";
-        String fragShaderPath = "C:\\Users\\twalther\\Documents\\Programming\\LWJGLOpenGLSample-main\\src\\shaders\\frag.fg";
+        String vertShaderPath = "C:\\Users\\Troy\\Documents\\GitHub\\LWJGLOpenGLSample\\src\\shaders\\vert.vsh";
+        String fragShaderPath = "C:\\Users\\Troy\\Documents\\GitHub\\LWJGLOpenGLSample\\src\\shaders\\frag.fg";
         try {
             default_shader = new Shader(vertShaderPath, fragShaderPath, true);
         }
