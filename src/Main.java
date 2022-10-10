@@ -29,7 +29,7 @@ public class Main {
     private float speed = 0.3f; // 3 units / second
     private float mouseSpeed = 0.005f;
 
-    private  Vector3f position = new Vector3f(4, 3, 3f);
+    private  Vector3f position = new Vector3f(0, 0, 0f);
 
     private Matrix4f view_matrix = new Matrix4f();
 
@@ -104,7 +104,7 @@ public class Main {
         sqr = new Square();
 
         perspective_matrix.setPerspective(45, width/height, 0.1f, 100);
-        view_matrix.lookAt(new Vector3f(4, 3, 3f), new Vector3f(0, 0, 0), new Vector3f(0, 1, 0));
+        view_matrix.lookAt(new Vector3f(0, 0, 1f), new Vector3f(0, 0, 0), new Vector3f(0, 1, 0));
         perspective_matrix.mul(view_matrix, vp_matrix);
         return true;
     }
@@ -140,6 +140,7 @@ public class Main {
 
         // Set the clear color
         glClearColor(0f, 0.0f, 0.0f, 0.0f);
+        glEnable(GL_CULL_FACE);
         // Ensure we can capture the escape key being pressed below
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
