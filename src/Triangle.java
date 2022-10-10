@@ -17,6 +17,10 @@ public class Triangle {
     private Vector3f scale       = new Vector3f(1f, 1f, 1f);
 
     private Matrix4f model_matrix = new Matrix4f();
+
+
+
+    private Matrix4f mvp;
     private float vertices[] = new float[]{-1.0f, -1.0f, 0.0f,
             1.0f, -1.0f, 0.0f,
             0.0f,  1.0f, 0.0f};
@@ -61,7 +65,7 @@ public class Triangle {
 
     public void draw(Matrix4f vp_matrix)
     {
-        Matrix4f mvp = new Matrix4f();
+        mvp = new Matrix4f();
         vp_matrix.mul(model_matrix, mvp);
         try( MemoryStack stack = MemoryStack.stackPush()) {
             glUniformMatrix4fv(this.mvp_location, false, mvp.get(stack.mallocFloat(16)));

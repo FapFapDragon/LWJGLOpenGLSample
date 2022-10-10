@@ -4,6 +4,7 @@ import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
+import java.math.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL31C.*;
@@ -25,12 +26,26 @@ public class Main {
     final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
     final int MAX_FRAMESKIP = 5;
 
+    private float speed = 0.3f; // 3 units / second
+    private float mouseSpeed = 0.005f;
+
+    private  Vector3f position = new Vector3f(4, 3, 3f);
 
     private Matrix4f view_matrix = new Matrix4f();
 
     private Matrix4f perspective_matrix = new Matrix4f();
 
     private Matrix4f vp_matrix = new Matrix4f();
+
+    private Vector3f right = new Vector3f();
+
+    private Vector3f direction = new Vector3f();
+
+    private Vector3f up = new Vector3f();
+    float horizontalAngle = 0;
+
+    float verticalAngle = 0;
+
 
     private Input input;
     Shader default_shader;
@@ -129,12 +144,12 @@ public class Main {
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
         perspective_matrix.mul(view_matrix, vp_matrix);
-
         //Loop gets updated 60 times per second (locked to 60FPS)
         do{
             loops = 0;
             do {
                 checkKeys();
+                checkMouse();
                 next_game_tick += SKIP_TICKS;
                 loops++;
             } while (System.currentTimeMillis() > next_game_tick && loops < MAX_FRAMESKIP);
@@ -169,22 +184,61 @@ public class Main {
     */
     private void checkKeys()
     {
+        Vector3f temp = new Vector3f();
         if (input.isKeyDown(GLFW_KEY_UP) && !input.isKeyDown(GLFW_KEY_DOWN))
         {
-            System.out.println("GOgin up");
+            direction.mul(speed, temp);
+            position.add(temp);
+            calculateViewProjection();
         }
         else if (input.isKeyDown(GLFW_KEY_DOWN) && !input.isKeyDown(GLFW_KEY_UP))
         {
-            System.out.println("GOgin donw");
+            direction.mul(speed, temp);
+            position.sub(temp);
+            calculateViewProjection();
         }
         if (input.isKeyDown(GLFW_KEY_LEFT) && !input.isKeyDown(GLFW_KEY_RIGHT))
         {
-            System.out.println("GOgin left");
+            right.mul(speed, temp);
+            position.sub(temp);
+            calculateViewProjection();
         }
         else if (input.isKeyDown(GLFW_KEY_RIGHT)&& !input.isKeyDown(GLFW_KEY_LEFT))
         {
-            System.out.println("GOgin RIGHT");
+            right.mul(speed, temp);
+            position.add(temp);
+            calculateViewProjection();
         }
+
+    }
+
+    private void checkMouse()
+    {
+        double[] xpos = new double[2];
+        double[] ypos = new double[2];
+
+        glfwGetCursorPos(window, xpos, ypos);
+        glfwSetCursorPos(window, width/2, height/2);
+        horizontalAngle += mouseSpeed * (width/2 - xpos[0] );
+        verticalAngle   += mouseSpeed *  (height/2 - ypos[0] );
+
+        direction = new Vector3f( (float) (Math.cos(verticalAngle) * Math.sin(horizontalAngle)), (float) Math.sin(verticalAngle) , (float) (Math.cos(verticalAngle) * Math.cos(horizontalAngle)));
+
+        right = new Vector3f((float)Math.sin(horizontalAngle - 3.14/2.0f) , 0, (float)Math.cos(horizontalAngle - 3.14/2.0f));
+
+        right.cross(direction, up);
+
+        calculateViewProjection();
+    }
+
+
+    private void calculateViewProjection()
+    {
+       //view_matrix = view_matrix.lookAt(direction, );
+        Vector3f final_position = new Vector3f();
+        position.add(direction, final_position);
+        view_matrix = new Matrix4f().lookAt(position, final_position, new Vector3f(0, 1, 0));
+        perspective_matrix.mul(view_matrix, vp_matrix);
     }
 
     public static void main(String[] args) {
