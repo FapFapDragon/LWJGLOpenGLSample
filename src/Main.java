@@ -5,7 +5,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 
-import org.lwjgl.openxr.XR;
 import java.math.*;
 
 import static org.lwjgl.glfw.GLFW.*;
