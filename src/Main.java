@@ -4,6 +4,8 @@ import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
+
+import org.lwjgl.openxr.XR;
 import java.math.*;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -76,7 +78,7 @@ public class Main {
 
 
         window = glfwCreateWindow(width, height, "JavaOpenGLXR", NULL, NULL);
-
+        glfwSetCursorPos(window, width/2, height/2);
         if (window == NULL)
         {
             throw new RuntimeException("Unable to Create window");
@@ -104,7 +106,7 @@ public class Main {
         sqr = new Square();
 
         perspective_matrix.setPerspective(45, width/height, 0.1f, 100);
-        view_matrix.lookAt(new Vector3f(0, 0, 1f), new Vector3f(0, 0, 0), new Vector3f(0, 1, 0));
+        view_matrix.lookAt(new Vector3f(0, 0, 0f), new Vector3f(3, 3, 4), new Vector3f(0, 1, 0));
         perspective_matrix.mul(view_matrix, vp_matrix);
         return true;
     }
